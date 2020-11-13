@@ -1,0 +1,309 @@
+状态模式：
+
+状态模式主要是分离不同的行为模式和整合不同的行为状态，
+
+
+1）控制器（Controller）负责管理与切换状态
+2）State控制三个阶段：进入，运作，离开
+3）控制器
+
+
+
+
+======================
+
+游戏当中多场景的转换。需要将各个场景的转换条件以及状态转换联系起来。
+各个场景负责各自的功能。
+
+
+
+
+===============
+再比如操作订单的时候，很明显的一点就是订单状态不可随即跳跃，必须注逐个过度。
+
+订单状态： 预定=》付款=》核对=》发货
+所有订单基类：
+
+
+public abstract class BaseOrderState{
+  
+  private StateContext context;
+  
+  public abstract void nextState(StateContext context);'
+  
+  public abstract void preState(StateContext context);
+
+  public abstract string getCurState();
+  
+  
+
+}
+
+
+具体状态类 -预定状态
+
+public class BookingState extends BaseOrderState{
+
+  private static BookingState _state;
+  public static BookingState getInstance()
+  {
+    if(_state == null)
+    {
+      _state = new BookingState();
+    }
+    return _state;
+  }
+
+@Override
+public void nextState(StateContext context)
+{
+  context.setState(PayState.getInstance());
+}
+
+@Override
+public void preState(StateContext context)
+{
+  System.out.println("返回订单状态");
+}
+
+@Override 
+public string getCurState(){
+  return BookingState.class.getName();
+}
+  
+  
+  
+
+}
+
+///////////
+
+状态管理类
+
+public class StateManage()
+{
+  private BaseOrderState state;
+  
+  public void setState(BaseOrderState state)
+  {
+    this.state = state;
+  }  
+  
+  public void nextState()
+  {
+    this.state.nextState(this);
+  }
+  
+  public void preState(){
+    this.state.preState();
+  }
+  
+  public string getCurState(){
+    string curState = this.state.getCurState();
+    return this.state.getCurState();
+  }
+  
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+FSM有限状态机游戏中的应用：
+  
+  
+  
+
+
+
+
+
+
+
+
+僵尸Zoombie小游戏:
+
+public enum ZoombieState
+{
+  Attack,Chase,Die
+}
+
+public class Zoomie : MonoBehaviour
+{
+  private ZombieState currentState;
+  
+  private void Update()
+  {
+    switch(currentState)
+    {
+      case ZombieState.Chase:
+        if(currentHealth <= 0)
+        {
+          ChangeState(ZombieState.Die);
+        }
+        if(PlayerInAttackRange())
+        {
+          ChangeState(ZombieState.Attack);
+        }
+        break;
+      case ZombieState.Attack:
+        if(currentHealth <= 0)
+        {
+          ChangeState(ZombieState.Die);
+        }
+        break;
+    }
+  
+  }
+
+
+
+
+}
+
+
+僵尸只根据自身状态判断行为
+public class Zombie : MonoBehaviour
+{
+  private ZombieState currentState;
+  
+  private void Update()
+  {
+    if(currentHealth <= 0)
+    {
+      
+    }
+  }
+
+}
+
+
+
+public abstract class State<T>
+{
+  //进入
+  public abstract void Enter(T entity);
+  //执行
+  public abstract void Execute(T entity);
+  //退出
+  public abstract void Exit(T entity);
+
+
+
+}
+
+
+StateMachine类：
+
+管理State在内部的切换
+public class StateMachine<T>
+{
+ 
+ 
+ 
+ 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+状态机管理游戏：
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+namespace states_by_conditions
+{
+  public enum StateType
+  {
+    FIRST_STATE,
+    SECOND_STATE
+  }
+  
+  public class StatesByConditionalComponent:MonoBehaviour
+  {
+    private StateType _state;
+    public StateType State
+    {
+      get
+      {
+        return _state;
+      }
+      set
+      {
+        _state = value;
+      }
+    }
+    
+    
+    
+    
+  }
+  
+
+}

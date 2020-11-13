@@ -1,0 +1,70 @@
+1)最简单的AssertBundle打包方式：
+
+
+Unity需要加载模型经常需要AssertBundle。
+
+在Unity中载入模型的最简单的方式就是：直接将模型文件放到工程目录下，然后拖进场景之中。
+但是我们需要在程序运行时将网络或者任意目录下的模型加载到场景之中，name我们只能自己编写解析模型的脚本。
+
+Unity没有提供加载模型的API，或者是没有开放给用户 。。。
+
+Unity中模型文件大多是.prefab，加载prefab的方式只有两个：
+1）Resource.Load,需要将prefab放到Resource目录下
+2）AssertDatabase.LoadAssertAtPath ,文件必须放在Asserts目录下，即网络和其他文件夹下prefab无法加载
+
+
+这时，assertBundle发挥除了很大用处。通过WWW加载AssertBundle。
+接下来的问题就是如何打包AssertBundle，
+
+利用
+public static AssetBundleManifest BuildAssetBundles
+(string outputPath, BuildAssetBundleOptions assetBundleOptions, BuildTarget targetPlatform);
+
+
+在Editor文件夹下创建脚本，放入脚本，这时才会出现AssertBundle选项
+
+
+
+AssertBundle功能开发好后，怎么用呢？？？
+
+
+AssertBundle需要对资源进行分组：
+1）按逻辑实体进行分组：
+一个UI界面或者所有UI界面一个包（这个界面里面的贴图和布局信息一个包）
+一个角色或者所有角色一个包（这个角色里面的模型和动画一个包）
+所有的场景所共享的部分一个包（包括贴图和模型）
+
+2)按资源类型分组：
+  所有声音资源打成一个包
+  所有shader打成一个包
+  所有模型打成一个包
+  所有材质打成一个包
+3）按照使用分组：
+  把需要同时加载的资源或者某一时间内使用的所有资源打成一个包。
+  可以按照关卡分，一个关卡所需要的所有资源包括角色、贴图、声音等打成一个包。
+  也可以按照场景分，一个场景所需要的资源一个包。
+  
+解包：
+
+IEnumerator LoadBundle(string url)
+{
+  WWW www = new WWW(url);
+  yield return www;
+  
+  if(www.error != null)
+  {
+    Debug.LogError();
+    yield break;
+  }
+}
+
+
+
+
+
+https://blog.csdn.net/puss0/article/details/79690523
+
+https://blog.csdn.net/puss0/article/details/79684185
+https://blog.csdn.net/puss0/article/details/79681013
+
+微夏博客网  
